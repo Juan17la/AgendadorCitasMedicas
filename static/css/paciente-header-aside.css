@@ -23,13 +23,6 @@ body{
         "sidebar main";
     }
 
-main{
-    grid-area: main;
-    padding: 20px;
-    background-color: #fff;
-    overflow-y: auto;
-}
-
 header{
     grid-area: header;
     display: flex;
@@ -152,7 +145,6 @@ header{
     cursor: pointer;
 }
 
-
 .info-user span:first-child{
     font-weight: bold;
 }
@@ -170,6 +162,7 @@ aside{
     
     width: 100%;
     padding: 10px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.301);
 }
 
 .sidebar-nav ul {
@@ -221,5 +214,5 @@ aside{
 
 .sidebar-nav a:hover {
     background-color: #00000017;
-    
+    font-size: 1.2rem;
 }
