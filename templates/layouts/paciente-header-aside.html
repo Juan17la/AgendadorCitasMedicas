@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/paciente-header-aside.css' %}">
+    {% block morecss %}
+    {% endblock %}
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-title">
+                <img src="https://cdn-icons-png.flaticon.com/512/4006/4006511.png" alt="logo">
+                <h1>Agendacion de Citas</h1>
+            </div>
+            <div class="container-header-right">
+                <ul class="container-links">
+                    <li class="link-header"><a href="">Inicio</a></li>
+                    <li class="link-header"><a href="">FQA</a></li>
+                    <li class="link-header-icon">
+                        <a href="">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1827/1827392.png" alt="Notificaciones">
+                        </a>
+                    </li>
+                </ul>
+                <div class="profile">
+                    <div class="info-user">
+                        <span class="user-detail">Anonimo34543</span>
+                        <span class="user-detail">2068532495</span>
+                    </div>
+                    <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Usuario">
+                </div>
+            </div>
+        </header>
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <ul class="sidebar-links">
+                    <li class="title-aside"><span class="icon">📊</span>Paciente</li>
+                    <li class="li-aside"><a href="#"><span class="links-aside">📅</span>Mis Citas</a></li>
+                    <li class="li-aside"><a href="#"><span class="links-aside">📋</span>Historial</a></li>
+                    <li class="li-aside"><a href="#"><span class="links-aside">👤</span>Mi Perfil</a></li>
+                    <li class="li-aside"><a href="#"><span class="links-aside">⚕️</span>Doctores</a></li>
+                    <li class="li-aside"><a href="#"><span class="links-aside">💊</span>Recetas</a></li>
+                    <li class="li-aside"><a href="#"><span class="links-aside">⚙️</span>Configuración</a></li>
+                </ul>
+            </nav>
+        </aside>
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

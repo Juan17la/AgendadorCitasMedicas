@@ -22,7 +22,10 @@ from apps.users import views as users_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', core_views.landingPage, name='landingPage'),
+    path('dashboard/paciente/', core_views.dashboardPaciente, name='dashboardPaciente'),
+    
     path('signup/', users_views.signUp, name='signUp'),
     path('signin/', users_views.signIn, name='signIn'),
     path('reset/', users_views.reset, name='reset'),
+
 ]
