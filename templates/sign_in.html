@@ -1,0 +1,22 @@
+{% extends 'layouts/header.html' %}
+{% load static %}
+
+{% block morecss %}
+<link rel="stylesheet" href="{% static 'css/sign_up.css' %}">
+{% endblock %}
+
+{% block title %}Inicar Sesion{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container">
+        <h2>Inicar Sesion</h2>
+        <form action="" method="POST" >
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit">Inicar Sesion</button>
+            <a href="">Olvidaste tu contraseña?</a>
+        </form>
+    </div>
+</main>
+{% endblock %}
