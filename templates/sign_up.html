@@ -15,6 +15,7 @@
             {% csrf_token %}
             {{ form }}
             <button type="submit">Registrarse</button>
+            <h2> {{error}} </h2>
         </form>
     </div>
 </main>
