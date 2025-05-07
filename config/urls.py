@@ -18,14 +18,17 @@ from django.contrib import admin
 from django.urls import path
 from apps.core import views as core_views
 from apps.users import views as users_views
+from apps.citasMedicas import views as citasMedicas_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', core_views.landingPage, name='landingPage'),
-    path('dashboard/paciente/', core_views.dashboardPaciente, name='dashboardPaciente'),
+    path('', core_views.index, name='index'),
+    path('signup/', users_views.signUp_view, name='signup'),
+    path('signin/', users_views.signIn_view, name='signin'),
+    path('signout/', users_views.signOut_view, name='signout'),
     
-    path('signup/', users_views.signUp, name='signUp'),
-    path('signin/', users_views.signIn, name='signIn'),
-    path('reset/', users_views.reset, name='reset'),
-
+    path('citas/', citasMedicas_views.citas, name='citas'),
+    path('agendarcita/', citasMedicas_views.agendarCita, name='agendaCita'),
+    path('cita/<int:cita_id>', citasMedicas_views.citaDetalles, name='citaDetalles'),
+    path('dashboarpaciente/', citasMedicas_views.pacienteDashboard, name='pacienteDashboard'),
 ]

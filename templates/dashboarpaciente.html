@@ -1,0 +1,44 @@
+<main>
+    <section id="bienvenida">
+        <article>
+            <h1>¡Bienvenido, {{user.nombres}}!</h1>
+            <p>Tu cita mas cerca es en <b>{{ CitaProxima.dias_restantes }} dias</b></p>
+        </article>
+        <article>
+            <div id="cita-proxima">
+                <div id="dia-cita">
+                    <span>{{CitaProxima.dia_fecha_cita}}</span>
+                    <span>{{CitaProxima.mes_fecha_cita}}</span>
+                </div>
+                <div id="info-cita">
+                    <span>{{CitaProxima.doctor}}</span>
+                    <p>{{CitaProxima.doctor.especialidad}}</p>
+                    <p>{{CitaProxima.hora_cita}}</p>
+                </div>
+            </div>
+        </article>
+    </section>
+    <section id="quick-actions">
+        <article id="quick-action-1">
+            <span>Agendar Cita</span>
+            <picture>
+                {% comment %} va el icon {% endcomment %}
+            </picture>
+            <p>Agenda una cita con el doctor de tu preferencia</p>
+        </article>
+        <article id="quick-action-2">
+            <span>Ver Citas</span>
+            <picture>
+                {% comment %} va el icon {% endcomment %}
+            </picture>
+            <p>Consulta tus citas pasadas y futuras</p>
+        </article>
+        <article id="quick-action-3">
+            <span>Ver Historial Medico</span>
+            <picture>
+                {% comment %} va el icon {% endcomment %}
+            </picture>
+            <p>Consulta tu historial medico y recetas</p>
+        </article>
+    </section>
+</main>

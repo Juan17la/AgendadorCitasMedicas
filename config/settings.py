@@ -37,10 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.users',
+    'apps.users.apps.UsersConfig',  
     'apps.citasMedicas',
     'apps.core',
 ]
+
+AUTH_USER_MODEL = 'users.User'  # Esto está bien, porque la app es 'users' aunque esté en /apps/users
+
+AUTHENTICATION_BACKENDS = [
+    'apps.users.backends.CedulaAuthBackend',  
+]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

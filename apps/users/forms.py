@@ -1,7 +1,7 @@
 from django import forms
-from .models import CustomUser
+from .models import User
 
-class CustomUserCreationForm(forms.ModelForm):
+class UserCreationForm(forms.ModelForm):
     cedula_ti = forms.RegexField(
         regex=r'^\d+$',
         max_length=150,
@@ -37,13 +37,13 @@ class CustomUserCreationForm(forms.ModelForm):
     )
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = ('cedula_ti', 'email', 'telefono', 'nombres', 'apellidos', 'fecha_nacimiento', 'password')
         widgets = {
             'password': forms.PasswordInput(),
         }
 
-class CustomUserAuthForm(forms.ModelForm):
+class UserAuthForm(forms.ModelForm):
     cedula_ti = forms.RegexField(
         regex=r'^\d+$',
         max_length=150,
@@ -55,7 +55,7 @@ class CustomUserAuthForm(forms.ModelForm):
     )
     
     class Meta:
-        model = CustomUser
+        model = User
         fields = ('cedula_ti', 'password')
         widgets = {
             'password':forms.PasswordInput(),
