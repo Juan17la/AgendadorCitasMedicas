@@ -3,9 +3,35 @@
     <section id="citas-medicaspendientes">
         <h2>Pendientes</h2>
         <span>{{nCitasP}}</span>
+        {% for cita in citasP %}
+            <div class="cita-pendiente">
+                <div id="info-cita-pendiente">
+                    <h3>{{cita.doctor.especialidad}}</h3>
+                    <p>Fecha: {{cita.dia_fecha_cita}} de {{cita.mes_fecha_cita}}</p>
+                    <p>Hora: {{cita.hora_cita}}</p>
+                </div>
+                <div id="redirect-cita-pendiente">
+                    <picture></picture>
+                    <a href="">Ver mas</a>
+                </div>
+            </div>
+        {% endfor %}
     </section>
     <section id="citas-canceladas">
         <h2>Canceladas</h2>
         <span>{{nCitasC}}</span>
+        {% for cita in citasC %}
+            <div class="cita-pendiente">
+                <div id="info-cita-pendiente">
+                    <h3>{{cita.doctor.especialidad}}</h3>
+                    <p>Fecha: {{cita.dia_fecha_cita}} de {{cita.mes_fecha_cita}}</p>
+                    <p>Hora: {{cita.hora_cita}}</p>
+                </div>
+                <div id="redirect-cita-pendiente">
+                    <picture></picture>
+                    <a href="">Ver mas</a>
+                </div>
+            </div>
+        {% endfor %}
     </section>
 </main>

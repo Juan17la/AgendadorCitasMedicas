@@ -1,12 +1,156 @@
-<main>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agendar Cita</title>
+  </head>
+  <body>
+    <main>
+      <h1>Agendar Cita</h1>
+      {% csrf_token %}
+      <form action="" method="post">
+        <div class="form-group">
+          <label for="especialidad">Especialidad</label>
+          <select name="especialidad" id="especialidad"></select>
+        </div>
+        <div class="form-group">
+          <label for="doctor">Doctor</label>
+          <select name="doctor" id="doctor" disabled></select>
+        </div>
+        <div class="form-group">
+          <label for="dia">Fecha</label>
+          <select name="dia" id="dia" disabled></select>
+        </div>
+        <div class="form-group">
+          <label for="bloque">Horario</label>
+          <select name="bloque" id="bloque" disabled></select>
+        </div>
+        <div class="form-group">
+          <label for="razon">Razón de la cita</label>
+          <textarea name="razon" id="razon" required></textarea>
+        </div>
+        <button type="submit">Agendar Cita</button>
+      </form>
+    </main>
+  </body>
+  <script>
+    const especialidadSelect = document.getElementById('especialidad');
+    const doctorSelect = document.getElementById('doctor');
+    const diaSelect = document.getElementById('dia');
+    const bloqueSelect = document.getElementById('bloque');
 
-    <h1>Agendar Cita</h1>
-    <div class="article">
-        <form action="" method='post'>
-            {% csrf_token %}
-            {{form}}
-            <button>Agendar Cita</button>
-        </form>
-    </div>
+    const listarEspecialidades = async () => {
+      try {
+        const response = await fetch('get_especialidades/');
+        const data = await response.json();
+        
+        let options = '<option value="">Seleccione una especialidad</option>';
+        data.forEach(especialidad => {
+          options += `<option value="${especialidad.id}">${especialidad.nombre}</option>`;
+        });
+        especialidadSelect.innerHTML = options;
+      } catch (error) {
+        console.error('Error al cargar especialidades:', error);
+      }
+    };
 
-</main>
+    const listarDoctores = async (especialidadId) => {
+      try {
+        doctorSelect.disabled = true;
+        diaSelect.disabled = true;
+        bloqueSelect.disabled = true;
+        
+        const response = await fetch(`get_doctores/${especialidadId}/`);
+        const data = await response.json();
+        
+        let options = '<option value="">Seleccione un doctor</option>';
+        data.forEach(doctor => {
+          options += `<option value="${doctor.id}">${doctor.nombre}</option>`;
+        });
+        doctorSelect.innerHTML = options;
+        doctorSelect.disabled = false;
+      } catch (error) {
+        console.error('Error al cargar doctores:', error);
+      }
+    };
+
+    const listarFechas = async (doctorId) => {
+      try {
+        diaSelect.disabled = true;
+        bloqueSelect.disabled = true;
+        
+        const response = await fetch(`get_fechas/${doctorId}/`);
+        const data = await response.json();
+        
+        let options = '<option value="">Seleccione una fecha</option>';
+        data.forEach(horario => {
+          horario.jornadas.forEach(jornada => {
+            options += `<option value="${jornada.id}">${jornada.dia} (${jornada.hora_inicio} - ${jornada.hora_fin})</option>`;
+          });
+        });
+        diaSelect.innerHTML = options;
+        diaSelect.disabled = false;
+      } catch (error) {
+        console.error('Error al cargar fechas:', error);
+      }
+    };
+
+    const listarBloques = async (jornadaId, doctorId) => {
+      try {
+        bloqueSelect.disabled = true;
+        
+        const response = await fetch(`get_bloques/${jornadaId}/${doctorId}/`);
+        const data = await response.json();
+        
+        let options = '<option value="">Seleccione un horario</option>';
+        data.forEach(bloque => {
+          if (bloque.disponible) {
+            options += `<option value="${bloque.id}">${bloque.hora_inicio} - ${bloque.hora_fin}</option>`;
+          }
+        });
+        bloqueSelect.innerHTML = options;
+        bloqueSelect.disabled = false;
+      } catch (error) {
+        console.error('Error al cargar bloques:', error);
+      }
+    };
+
+    // Event Listeners
+    especialidadSelect.addEventListener('change', (e) => {
+      if (e.target.value) {
+        listarDoctores(e.target.value);
+      } else {
+        doctorSelect.innerHTML = '<option value="">Seleccione un doctor</option>';
+        diaSelect.innerHTML = '<option value="">Seleccione una fecha</option>';
+        bloqueSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+        doctorSelect.disabled = true;
+        diaSelect.disabled = true;
+        bloqueSelect.disabled = true;
+      }
+    });
+
+    doctorSelect.addEventListener('change', (e) => {
+      if (e.target.value) {
+        listarFechas(e.target.value);
+      } else {
+        diaSelect.innerHTML = '<option value="">Seleccione una fecha</option>';
+        bloqueSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+        diaSelect.disabled = true;
+        bloqueSelect.disabled = true;
+      }
+    });
+
+    diaSelect.addEventListener('change', (e) => {
+      if (e.target.value && doctorSelect.value) {
+        listarBloques(e.target.value, doctorSelect.value);
+      } else {
+        bloqueSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+        bloqueSelect.disabled = true;
+      }
+    });
+
+    // Cargar especialidades al iniciar la página
+    window.addEventListener('load', listarEspecialidades);
+  </script>
+</html>
