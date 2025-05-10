@@ -26,21 +26,52 @@ class Doctor(models.Model):
 
 class JornadaDiaria(models.Model):
     DIAS_SEMANA = [
-        ('lunes', 'Lunes'),
-        ('martes', 'Martes'),
-        ('miercoles', 'Miércoles'),
-        ('jueves', 'Jueves'),
-        ('viernes', 'Viernes'),
-        ('sabado', 'Sábado'),
-        ('domingo', 'Domingo'),
+        (0, 'Lunes'),
+        (1, 'Martes'),
+        (2, 'Miércoles'),
+        (3, 'Jueves'),
+        (4, 'Viernes'),
+        (5, 'Sábado'),
+        (6, 'Domingo'),
     ]
-    dia = models.CharField(max_length=10, choices=DIAS_SEMANA)
+    dia_semana = models.IntegerField(choices=DIAS_SEMANA)
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
     duracion_bloque = models.IntegerField(default=20)  # minutos
 
     def __str__(self):
-        return f"{self.dia.title()} {self.hora_inicio}-{self.hora_fin} ({self.duracion_bloque}min)"
+        return f"{self.get_dia_semana_display()} {self.hora_inicio}-{self.hora_fin}"
+
+    def generar_bloques(self, fecha, doctor):
+        """
+        Genera bloques horarios para una fecha específica
+        Solo genera bloques si el día de la semana coincide y la fecha es futura
+        """
+        from datetime import datetime, timedelta
+
+        # Solo generar si el día de la semana coincide
+        if fecha.weekday() != self.dia_semana:
+            return []
+
+        bloques = []
+        hora_actual = datetime.combine(fecha, self.hora_inicio)
+        hora_fin = datetime.combine(fecha, self.hora_fin)
+
+        while hora_actual + timedelta(minutes=self.duracion_bloque) <= hora_fin:
+            # Verificar si ya existe un bloque para esta hora
+            bloque, creado = BloqueHorario.objects.get_or_create(
+                doctor=doctor,
+                jornada=self,
+                fecha=fecha,
+                hora_inicio=hora_actual.time(),
+                hora_fin=(hora_actual + timedelta(minutes=self.duracion_bloque)).time(),
+                defaults={'disponible': True}
+            )
+            if bloque.disponible:  # Solo incluir bloques disponibles
+                bloques.append(bloque)
+            hora_actual += timedelta(minutes=self.duracion_bloque)
+
+        return bloques
 
 
 class HorarioSemanal(models.Model):
@@ -50,6 +81,23 @@ class HorarioSemanal(models.Model):
 
     def __str__(self):
         return f"Horario desde {self.inicio_horario} para {self.doctor}"
+    
+    def generar_bloques_rango(self, fecha_inicio, fecha_fin):
+        """
+        Genera bloques horarios para un rango de fechas, solo para días laborables
+        """
+        from datetime import timedelta
+        bloques = []
+        fecha_actual = fecha_inicio
+
+        while fecha_actual <= fecha_fin:
+            # Solo procesar días de lunes a viernes (0-4)
+            if fecha_actual.weekday() < 5:
+                for jornada in self.jornadas.all():
+                    bloques.extend(jornada.generar_bloques(fecha_actual, self.doctor))
+            fecha_actual += timedelta(days=1)
+
+        return bloques
 
 
 class BloqueHorario(models.Model):
@@ -94,12 +142,16 @@ class Cita(models.Model):
         return meses[self.bloque.fecha.month - 1]
 
     @property
-    def hora_cita(self):
-        return self.bloque.hora_inicio.strftime("%H:%M")
-
-    @property
     def dias_restantes(self):
-        return (datetime.combine(self.bloque.fecha, self.bloque.hora_inicio) - timezone.now()).days
+        fecha_y_hora = datetime.combine(self.bloque.fecha, self.bloque.hora_inicio)
+        fecha_y_hora_aware = timezone.make_aware(fecha_y_hora)
+        dias_restantes = (fecha_y_hora_aware - timezone.now()).days
+        if dias_restantes > 1:
+            return f"{dias_restantes} días"
+        elif dias_restantes == 1:
+            return "1 día"
+        else:
+            return "Hoy"
 
     def __str__(self):
         return f'Cita de {self.paciente.nombres} con Dr. {self.doctor.user.apellidos} el {self.fecha_hora.strftime("%d-%m-%Y %H:%M")}'

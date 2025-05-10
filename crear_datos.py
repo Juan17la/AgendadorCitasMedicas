@@ -1,133 +1,157 @@
 import os
 import django
-import random
-from datetime import datetime, time, timedelta, date
+from datetime import time, date, timedelta
 
-def configurar_django():
-    # Configura el entorno de Django
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-    django.setup()
+# Configurar Django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+django.setup()
 
-def crear_datos():    # Importa los modelos después de configurar Django
-    from apps.users.models import User
-    from apps.citasMedicas.models import Especialidad, Doctor, JornadaDiaria, HorarioSemanal, BloqueHorario
+from django.contrib.auth import get_user_model
+from apps.citasMedicas.models import Especialidad, Doctor, JornadaDiaria, HorarioSemanal, BloqueHorario, Cita, CitaConfirmada
 
-    # Limpia los datos existentes
-    print("🗑️ Limpiando datos existentes...")
+User = get_user_model()
+
+def limpiar_datos():
+    """Limpia todos los datos existentes relacionados con citas médicas"""
+    print("Limpiando datos existentes...")
+    
+    # Eliminar en orden para respetar las dependencias
+    print("- Eliminando citas confirmadas...")
+    CitaConfirmada.objects.all().delete()
+    
+    print("- Eliminando citas...")
+    Cita.objects.all().delete()
+    
+    print("- Eliminando bloques horarios...")
+    BloqueHorario.objects.all().delete()
+    
+    print("- Eliminando horarios semanales...")
     HorarioSemanal.objects.all().delete()
-    Doctor.objects.all().delete()
+    
+    print("- Eliminando jornadas diarias...")
     JornadaDiaria.objects.all().delete()
+    
+    print("- Eliminando doctores...")
+    Doctor.objects.all().delete()
+    
+    print("- Eliminando especialidades...")
     Especialidad.objects.all().delete()
-    User.objects.exclude(rol='Administrador').delete()  # Preserva usuarios admin
+    
+    print("- Eliminando usuarios doctores...")
+    User.objects.filter(email__in=[
+        'juan.perez@ejemplo.com',
+        'maria.garcia@ejemplo.com',
+        'carlos.lopez@ejemplo.com'
+    ]).delete()
+    
+    print("Datos limpiados exitosamente.")
 
-    # --------- Crear 10 especialidades ----------
-    nombres_especialidades = [
-        "Cardiología", "Dermatología", "Pediatría", "Neurología", "Psiquiatría",
-        "Ginecología", "Urología", "Oftalmología", "Oncología", "Reumatología"
+def crear_datos_prueba():
+    # Primero limpiar datos existentes
+    limpiar_datos()
+    
+    # Crear especialidades
+    especialidades = [
+        ('Medicina General', 'Consultas y atención médica general'),
+        ('Cardiología', 'Atención especializada en el corazón'),
+        ('Pediatría', 'Atención médica para niños'),
+    ]
+    
+    for nombre, descripcion in especialidades:
+        especialidad = Especialidad.objects.create(
+            nombre=nombre,
+            descripcion=descripcion
+        )
+        print(f"Especialidad creada: {especialidad.nombre}")
+
+    # Crear usuarios doctores
+    doctores_data = [
+        {
+            'cedula_ti': '1001',
+            'nombres': 'Juan',
+            'apellidos': 'Pérez',
+            'email': 'juan.perez@ejemplo.com',
+            'especialidad': 'Medicina General',
+            'consultorio': '101',
+            'rol': 'Doctor'
+        },
+        {
+            'cedula_ti': '1002',
+            'nombres': 'María',
+            'apellidos': 'García',
+            'email': 'maria.garcia@ejemplo.com',
+            'especialidad': 'Cardiología',
+            'consultorio': '202',
+            'rol': 'Doctor'
+        },
+        {
+            'cedula_ti': '1003',
+            'nombres': 'Carlos',
+            'apellidos': 'López',
+            'email': 'carlos.lopez@ejemplo.com',
+            'especialidad': 'Pediatría',
+            'consultorio': '303',
+            'rol': 'Doctor'
+        }
     ]
 
-    especialidades = []
-
-    for nombre in nombres_especialidades:
-        e = Especialidad.objects.create(nombre=nombre, descripcion=f"Especialidad médica en {nombre.lower()}.")
-        especialidades.append(e)
-
-    print("✅ Especialidades creadas.")
-
-    # --------- Crear jornadas de lunes a viernes 8am - 12pm (bloques de 20 min) ----------
-    dias_semana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes']
-
-    jornadas_creadas = []
-
-    for dia in dias_semana:
-        jornada = JornadaDiaria.objects.create(
-            dia=dia,
-            hora_inicio=time(hour=8),
-            hora_fin=time(hour=12),
-            duracion_bloque=20
-        )
-        jornadas_creadas.append(jornada)
-
-    print("✅ Jornadas creadas.")
-
-    # --------- Crear 20 usuarios con rol Doctor + modelo Doctor + horario semanal ----------
-    for i in range(1, 21):
-        cedula = f"10{i:05d}"
-        email = f"doctor{i}@ejemplo.com"
-        nombres = f"Doctor{i}"
-        apellidos = f"Apellido{i}"
-        telefono = f"3001234{i:04d}"
-
+    for data in doctores_data:
+        # Crear nuevo usuario
         user = User.objects.create_user(
-            cedula_ti=cedula,
-            email=email,
-            password="12345",
-            nombres=nombres,
-            apellidos=apellidos,
-            fecha_nacimiento=date(1990, 1, 1),
-            telefono=telefono,
-            rol='Doctor',
+            cedula_ti=data['cedula_ti'],
+            email=data['email'],
+            nombres=data['nombres'],
+            apellidos=data['apellidos'],
+            rol=data['rol'],
+            password='12345'
         )
+        print(f"Usuario creado: {user.email}")
 
-        especialidad = random.choice(especialidades)
+        # Crear doctor
+        especialidad = Especialidad.objects.get(nombre=data['especialidad'])
         doctor = Doctor.objects.create(
             user=user,
             especialidad=especialidad,
-            consultorio=f"{random.randint(100, 500)}"
+            consultorio=data['consultorio']
         )
+        print(f"Doctor creado: Dr. {user.nombres} {user.apellidos}")
 
-        # Crear horario semanal a partir de hoy
+        # Crear jornadas para el doctor
+        jornadas = []
+        for dia in range(5):  # Lunes a Viernes
+            # Jornada mañana
+            jornada_m = JornadaDiaria.objects.create(
+                dia_semana=dia,
+                hora_inicio=time(8, 0),
+                hora_fin=time(12, 0),
+                duracion_bloque=30
+            )
+            # Jornada tarde
+            jornada_t = JornadaDiaria.objects.create(
+                dia_semana=dia,
+                hora_inicio=time(14, 0),
+                hora_fin=time(18, 0),
+                duracion_bloque=30
+            )
+            jornadas.extend([jornada_m, jornada_t])
+
+        # Crear horario semanal
         horario = HorarioSemanal.objects.create(
             doctor=doctor,
             inicio_horario=date.today()
         )
-        horario.jornadas.set(jornadas_creadas)
-    print("✅ 20 doctores con horarios creados.")
+        
+        # Agregar jornadas al horario
+        horario.jornadas.add(*jornadas)
 
-    # --------- Crear bloques horarios para cada doctor ----------
-    # Obtener todos los doctores
-    doctores = Doctor.objects.all()
-    
-    # Para cada doctor, crear bloques horarios para la próxima semana
-    for doctor in doctores:
-        horario_semanal = doctor.horarios_semanales.first()
-        if horario_semanal:
-            # Para cada jornada del doctor
-            for jornada in horario_semanal.jornadas.all():
-                # Calcular las fechas para los próximos 7 días
-                for i in range(7):
-                    fecha_actual = date.today() + timedelta(days=i)
-                    
-                    # Mapear el día de la semana (0=lunes, 6=domingo) al formato de la base de datos
-                    dias_map = {
-                        0: 'lunes', 1: 'martes', 2: 'miercoles',
-                        3: 'jueves', 4: 'viernes', 5: 'sabado', 6: 'domingo'
-                    }
-                    
-                    # Si el día de la semana coincide con la jornada
-                    if dias_map[fecha_actual.weekday()] == jornada.dia:
-                        # Crear bloques de 20 minutos entre hora_inicio y hora_fin
-                        hora_actual = datetime.combine(fecha_actual, jornada.hora_inicio)
-                        hora_fin = datetime.combine(fecha_actual, jornada.hora_fin)
-                        
-                        while hora_actual < hora_fin:
-                            # Crear el bloque
-                            hora_fin_bloque = (hora_actual + timedelta(minutes=jornada.duracion_bloque))
-                            
-                            BloqueHorario.objects.create(
-                                doctor=doctor,
-                                jornada=jornada,
-                                fecha=fecha_actual,
-                                hora_inicio=hora_actual.time(),
-                                hora_fin=hora_fin_bloque.time(),
-                                disponible=True
-                            )
-                            
-                            # Avanzar al siguiente bloque
-                            hora_actual = hora_fin_bloque
-
-    print("✅ Bloques horarios creados para todos los doctores.")
+        # Generar bloques para las próximas 8 semanas
+        print(f"Generando bloques para Dr. {user.nombres} {user.apellidos}")
+        horario.generar_bloques_rango(
+            fecha_inicio=date.today(),
+            fecha_fin=date.today() + timedelta(weeks=8)
+        )
 
 if __name__ == '__main__':
-    configurar_django()
-    crear_datos()
+    print("Iniciando creación de datos de prueba...")
+    crear_datos_prueba()
+    print("¡Datos de prueba creados exitosamente!")

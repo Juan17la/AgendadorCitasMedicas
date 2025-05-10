@@ -4,12 +4,126 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Agendar Cita</title>
+    <style>
+      .calendar-container {
+        margin: 20px auto;
+        max-width: 400px; /* Reducido de 800px a 400px */
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 15px;
+        background: #fff;
+      }
+      .month-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      .month-title {
+        text-align: center;
+        font-size: 1.2em;
+        color: #333;
+      }
+      .nav-button {
+        background: #f8f9fa;
+        border: 1px solid #ced4da;
+        padding: 5px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .nav-button:hover {
+        background: #e9ecef;
+      }
+      .nav-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px; /* Reducido de 8px a 4px */
+        margin: 10px 0;
+      }
+      .calendar-header {
+        background: #f8f9fa;
+        padding: 8px 4px;
+        text-align: center;
+        font-weight: bold;
+        color: #666;
+        border: 1px solid #eee;
+        border-radius: 4px;
+      }
+      .calendar-day {
+        padding: 8px 4px;
+        text-align: center;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.9em; /* Añadido para reducir tamaño de texto */
+      }
+      .calendar-day.disabled {
+        background-color: #f8f9fa;
+        color: #dee2e6;
+        cursor: not-allowed;
+        border-color: #f8f9fa;
+      }
+      .calendar-day.selected {
+        background-color: #007bff;
+        color: white;
+        border-color: #0056b3;
+      }
+      .calendar-day.available {
+        background-color: #e3f2fd;
+        border-color: #90caf9;
+        font-weight: bold;
+      }
+      .calendar-day.available:hover {
+        background-color: #bbdefb;
+        transform: scale(1.05);
+      }
+      .calendar-day.weekend {
+        background-color: #f8f9fa;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #495057;
+      }
+      select, textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      select:disabled {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
   </head>
   <body>
     <main>
       <h1>Agendar Cita</h1>
-      {% csrf_token %}
       <form action="" method="post">
+        {% csrf_token %}
         <div class="form-group">
           <label for="especialidad">Especialidad</label>
           <select name="especialidad" id="especialidad"></select>
@@ -19,27 +133,54 @@
           <select name="doctor" id="doctor" disabled></select>
         </div>
         <div class="form-group">
-          <label for="dia">Fecha</label>
-          <select name="dia" id="dia" disabled></select>
+          <label for="dia">Seleccione una fecha:</label>
+          <div id="calendario-container"></div>
         </div>
         <div class="form-group">
-          <label for="bloque">Horario</label>
-          <select name="bloque" id="bloque" disabled></select>
+          <label for="horario">Horario disponible:</label>
+          <select name="horario" id="horario" disabled>
+            <option value="">Seleccione un horario</option>
+          </select>
+          <input type="hidden" name="bloque" id="bloque">
         </div>
         <div class="form-group">
           <label for="razon">Razón de la cita</label>
-          <textarea name="razon" id="razon" required></textarea>
+          <textarea name="razon" id="razon" required rows="4"></textarea>
         </div>
         <button type="submit">Agendar Cita</button>
       </form>
     </main>
   </body>
   <script>
+    // Referencias a elementos del DOM
     const especialidadSelect = document.getElementById('especialidad');
     const doctorSelect = document.getElementById('doctor');
-    const diaSelect = document.getElementById('dia');
-    const bloqueSelect = document.getElementById('bloque');
+    const bloqueInput = document.getElementById('bloque');
+    const calendarContainer = document.getElementById('calendario-container');
+    const horarioSelect = document.getElementById('horario');
 
+    // Variables globales para manejar el estado
+    let fechasDisponiblesGlobal = []; // Almacena todas las fechas disponibles
+    let mesActual = new Date(); // Almacena el mes que se está mostrando
+
+    /**
+     * Formatea una fecha en español con formato largo
+     * @param {Date} fecha - Fecha a formatear
+     * @returns {string} Fecha formateada (ej: "lunes, 1 de enero de 2025")
+     */
+    const formatearFecha = (fecha) => {
+      return fecha.toLocaleDateString('es-ES', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+    };
+
+    /**
+     * Carga la lista de especialidades desde el servidor
+     * y las muestra en el select correspondiente
+     */
     const listarEspecialidades = async () => {
       try {
         const response = await fetch('get_especialidades/');
@@ -55,11 +196,17 @@
       }
     };
 
+    /**
+     * Carga la lista de doctores de una especialidad específica
+     * @param {string} especialidadId - ID de la especialidad seleccionada
+     */
     const listarDoctores = async (especialidadId) => {
       try {
+        // Deshabilitar controles y limpiar selecciones previas
         doctorSelect.disabled = true;
-        diaSelect.disabled = true;
-        bloqueSelect.disabled = true;
+        calendarContainer.innerHTML = '';
+        horarioSelect.disabled = true;
+        horarioSelect.innerHTML = '<option value="">Seleccione un horario</option>';
         
         const response = await fetch(`get_doctores/${especialidadId}/`);
         const data = await response.json();
@@ -75,58 +222,199 @@
       }
     };
 
-    const listarFechas = async (doctorId) => {
-      try {
-        diaSelect.disabled = true;
-        bloqueSelect.disabled = true;
-        
-        const response = await fetch(`get_fechas/${doctorId}/`);
-        const data = await response.json();
-        
-        let options = '<option value="">Seleccione una fecha</option>';
-        data.forEach(horario => {
-          horario.jornadas.forEach(jornada => {
-            options += `<option value="${jornada.id}">${jornada.dia} (${jornada.hora_inicio} - ${jornada.hora_fin})</option>`;
-          });
-        });
-        diaSelect.innerHTML = options;
-        diaSelect.disabled = false;
-      } catch (error) {
-        console.error('Error al cargar fechas:', error);
+    /**
+     * Crea y muestra el calendario para un mes específico
+     * @param {Array} fechasDisponibles - Array de fechas con sus bloques horarios
+     * @param {Date} fecha - Fecha para determinar el mes a mostrar
+     */
+    const crearCalendario = (fechasDisponibles, fecha = new Date()) => {
+      // Guardar fechas disponibles para navegación entre meses
+      fechasDisponiblesGlobal = fechasDisponibles;
+      
+      // Crear mapa de fechas para acceso rápido
+      const fechasMap = new Map(
+        fechasDisponibles.map(f => [f.fecha, f])
+      );
+
+      calendarContainer.innerHTML = '';
+      
+      // Crear contenedor principal del calendario
+      const contenedorMes = document.createElement('div');
+      contenedorMes.className = 'calendar-container';
+      
+      // Crear barra de navegación del mes
+      const navegacion = document.createElement('div');
+      navegacion.className = 'month-navigation';
+      
+      const botonAnterior = document.createElement('button');
+      botonAnterior.className = 'nav-button';
+      botonAnterior.textContent = '← Anterior';
+      botonAnterior.type = 'button';
+      
+      const tituloMes = document.createElement('div');
+      tituloMes.className = 'month-title';
+      
+      const botonSiguiente = document.createElement('button');
+      botonSiguiente.className = 'nav-button';
+      botonSiguiente.textContent = 'Siguiente →';
+      botonSiguiente.type = 'button';
+      
+      // Configurar título y límites de navegación
+      tituloMes.textContent = fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+      
+      const hoy = new Date();
+      const ultimoDia = new Date(hoy);
+      ultimoDia.setDate(hoy.getDate() + 56); // Límite de 8 semanas
+      
+      const primerDiaMes = new Date(fecha.getFullYear(), fecha.getMonth(), 1);
+      const ultimoDiaMes = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0);
+      
+      // Deshabilitar botones según límites
+      botonAnterior.disabled = primerDiaMes < hoy;
+      botonSiguiente.disabled = ultimoDiaMes > ultimoDia;
+      
+      // Configurar navegación entre meses
+      botonAnterior.addEventListener('click', () => {
+        mesActual.setMonth(mesActual.getMonth() - 1);
+        crearCalendario(fechasDisponiblesGlobal, new Date(mesActual));
+      });
+      
+      botonSiguiente.addEventListener('click', () => {
+        mesActual.setMonth(mesActual.getMonth() + 1);
+        crearCalendario(fechasDisponiblesGlobal, new Date(mesActual));
+      });
+      
+      // Ensamblar la navegación
+      navegacion.appendChild(botonAnterior);
+      navegacion.appendChild(tituloMes);
+      navegacion.appendChild(botonSiguiente);
+      contenedorMes.appendChild(navegacion);
+      
+      // Crear grid del calendario
+      const calendario = document.createElement('div');
+      calendario.className = 'calendar';
+      
+      // Agregar encabezados de días
+      const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+      diasSemana.forEach(dia => {
+        const header = document.createElement('div');
+        header.className = 'calendar-header';
+        header.textContent = dia;
+        calendario.appendChild(header);
+      });
+      
+      // Calcular días del mes
+      const inicioMes = new Date(fecha.getFullYear(), fecha.getMonth(), 1);
+      const finMes = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0);
+      
+      // Agregar celdas vacías hasta el primer día del mes
+      for (let i = 0; i < inicioMes.getDay(); i++) {
+        const dia = document.createElement('div');
+        dia.className = 'calendar-day disabled';
+        calendario.appendChild(dia);
       }
+      
+      // Agregar los días del mes
+      for (let i = 1; i <= finMes.getDate(); i++) {
+        const fecha = new Date(inicioMes.getFullYear(), inicioMes.getMonth(), i);
+        const fechaStr = fecha.toISOString().split('T')[0];
+        
+        const dia = document.createElement('div');
+        dia.className = 'calendar-day';
+        dia.textContent = i;
+        
+        // Determinar si es fin de semana
+        const esFinde = fecha.getDay() === 0 || fecha.getDay() === 6;
+        
+        // Aplicar estilos según disponibilidad
+        if (fecha < hoy || fecha > ultimoDia || esFinde) {
+          dia.classList.add('disabled');
+          if (esFinde) dia.classList.add('weekend');
+        } else if (fechasMap.has(fechaStr)) {
+          dia.classList.add('available');
+          dia.dataset.fecha = fechaStr;
+          dia.addEventListener('click', () => mostrarBloques(fechasMap.get(fechaStr)));
+        } else {
+          dia.classList.add('disabled');
+        }
+        
+        calendario.appendChild(dia);
+      }
+      
+      contenedorMes.appendChild(calendario);
+      calendarContainer.appendChild(contenedorMes);
     };
 
-    const listarBloques = async (jornadaId, doctorId) => {
+    /**
+     * Muestra los bloques horarios disponibles para una fecha específica
+     * @param {Object} fecha - Objeto con información de la fecha y sus bloques
+     */
+    const mostrarBloques = (fecha) => {
+      // Actualizar selección visual
+      document.querySelectorAll('.calendar-day').forEach(dia => {
+        dia.classList.remove('selected');
+      });
+      
+      const diaSeleccionado = document.querySelector(`[data-fecha="${fecha.fecha}"]`);
+      if (diaSeleccionado) {
+        diaSeleccionado.classList.add('selected');
+      }
+      
+      // Actualizar select de horarios
+      const fechaObj = new Date(fecha.fecha);
+      horarioSelect.innerHTML = '<option value="">Seleccione un horario</option>' +
+        fecha.bloques.map(bloque => `
+          <option value="${bloque.id}">${bloque.hora_inicio} - ${bloque.hora_fin}</option>
+        `).join('');
+      
+      horarioSelect.disabled = false;
+    };
+
+    /**
+     * Carga las fechas disponibles para un doctor específico
+     * @param {string} doctorId - ID del doctor seleccionado
+     */
+    const listarFechas = async (doctorId) => {
       try {
-        bloqueSelect.disabled = true;
+        // Limpiar selecciones previas
+        calendarContainer.innerHTML = '';
+        horarioSelect.disabled = true;
+        horarioSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+        bloqueInput.value = '';
         
-        const response = await fetch(`get_bloques/${jornadaId}/${doctorId}/`);
-        const data = await response.json();
+        const response = await fetch(`get_fechas/${doctorId}/`);
+        const fechasDisponibles = await response.json();
         
-        let options = '<option value="">Seleccione un horario</option>';
-        data.forEach(bloque => {
-          if (bloque.disponible) {
-            options += `<option value="${bloque.id}">${bloque.hora_inicio} - ${bloque.hora_fin}</option>`;
-          }
-        });
-        bloqueSelect.innerHTML = options;
-        bloqueSelect.disabled = false;
+        if (fechasDisponibles.length === 0) {
+          calendarContainer.innerHTML = '<p>No hay fechas disponibles para este doctor.</p>';
+          return;
+        }
+        
+        // Mostrar calendario del mes actual
+        mesActual = new Date();
+        crearCalendario(fechasDisponibles);
       } catch (error) {
-        console.error('Error al cargar bloques:', error);
+        console.error('Error al cargar fechas:', error);
+        calendarContainer.innerHTML = '<p>Error al cargar el calendario. Por favor, intente nuevamente.</p>';
       }
     };
 
     // Event Listeners
+    horarioSelect.addEventListener('change', (e) => {
+      bloqueInput.value = e.target.value || '';
+    });
+
     especialidadSelect.addEventListener('change', (e) => {
       if (e.target.value) {
         listarDoctores(e.target.value);
       } else {
+        // Limpiar selecciones si no hay especialidad seleccionada
         doctorSelect.innerHTML = '<option value="">Seleccione un doctor</option>';
-        diaSelect.innerHTML = '<option value="">Seleccione una fecha</option>';
-        bloqueSelect.innerHTML = '<option value="">Seleccione un horario</option>';
         doctorSelect.disabled = true;
-        diaSelect.disabled = true;
-        bloqueSelect.disabled = true;
+        calendarContainer.innerHTML = '';
+        horarioSelect.disabled = true;
+        horarioSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+        bloqueInput.value = '';
       }
     });
 
@@ -134,23 +422,15 @@
       if (e.target.value) {
         listarFechas(e.target.value);
       } else {
-        diaSelect.innerHTML = '<option value="">Seleccione una fecha</option>';
-        bloqueSelect.innerHTML = '<option value="">Seleccione un horario</option>';
-        diaSelect.disabled = true;
-        bloqueSelect.disabled = true;
+        // Limpiar selecciones si no hay doctor seleccionado
+        calendarContainer.innerHTML = '';
+        horarioSelect.disabled = true;
+        horarioSelect.innerHTML = '<option value="">Seleccione un horario</option>';
+        bloqueInput.value = '';
       }
     });
 
-    diaSelect.addEventListener('change', (e) => {
-      if (e.target.value && doctorSelect.value) {
-        listarBloques(e.target.value, doctorSelect.value);
-      } else {
-        bloqueSelect.innerHTML = '<option value="">Seleccione un horario</option>';
-        bloqueSelect.disabled = true;
-      }
-    });
-
-    // Cargar especialidades al iniciar la página
+    // Inicializar cargando las especialidades al cargar la página
     window.addEventListener('load', listarEspecialidades);
   </script>
 </html>

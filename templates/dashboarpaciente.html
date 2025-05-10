@@ -1,8 +1,11 @@
+{% extends "layouts/dashboard_paciente.html" %}
+
+{% block content %}
 <main>
     <section id="bienvenida">
         <article>
             <h1>¡Bienvenido, {{user.nombres}}!</h1>
-            <p>Tu cita mas cerca es en <b>{{ CitaProxima.dias_restantes }} dias</b></p>
+            <p>Tu cita mas cerca es en <b>{{ CitaProxima.dias_restantes }}</b></p>
         </article>
         <article>
             <div id="cita-proxima">
@@ -13,7 +16,7 @@
                 <div id="info-cita">
                     <span>{{CitaProxima.doctor}}</span>
                     <p>{{CitaProxima.doctor.especialidad}}</p>
-                    <p>{{CitaProxima.hora_cita}}</p>
+                    <p>{{CitaProxima.bloque.hora_inicio}}</p>
                 </div>
             </div>
         </article>
@@ -42,3 +45,4 @@
         </article>
     </section>
 </main>
+{% endblock content %}
