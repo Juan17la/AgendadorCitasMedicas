@@ -147,9 +147,9 @@ class Cita(models.Model):
         fecha_y_hora_aware = timezone.make_aware(fecha_y_hora)
         dias_restantes = (fecha_y_hora_aware - timezone.now()).days
         if dias_restantes > 1:
-            return f"{dias_restantes} días"
+            return f"en {dias_restantes} días"
         elif dias_restantes == 1:
-            return "1 día"
+            return "en un 1 día"
         else:
             return "Hoy"
 

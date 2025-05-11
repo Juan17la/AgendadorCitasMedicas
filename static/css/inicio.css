@@ -1,0 +1,101 @@
+section{
+    display: flex;
+    color: var(--text-color-one);
+    background-color: var(--surface-bg-color-two);
+    border: 3px solid var(--header-border-color);
+    transition: 0.2s ease-out;
+    border-radius: 8px;
+
+    padding: 0.5rem 1.2rem;
+}
+
+#bienvenida{
+    justify-content: space-between;
+    align-items: center;
+}
+
+#bienvenida article{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    width: fit-content;
+}
+
+#cita-proxima{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 8px;
+    width: 300px;
+
+    background-color: var(--surface-bg-color-three);
+    border: 2px solid var(--header-border-color);
+}
+
+#cita-proxima:hover{
+    background-color: var(--surface-bg-color-two);
+    border-radius: 8px;
+}
+
+#dia-cita{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: 2px solid var(--header-border-color);
+    cursor: pointer;
+}
+
+#dia-cita:hover{
+    background-color: var(--nav-hover-bg-color);
+    border-radius: 8px;
+}
+
+#quick-actions{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+#quick-action{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    gap: 1rem;
+    width: 100%;
+    padding: 0.5rem 0.5rem;
+
+    background-color: var(--surface-bg-color-three);
+    border: 2px solid var(--header-border-color);
+    border-radius: 10px;
+    transition: 0.2s ease-in-out;
+
+    cursor: pointer;
+
+    & strong{
+        font-size: 1.2rem;
+        color: var(--text-color-one);
+    }
+
+    & p{
+        font-size: 1rem;
+        color: var(--text-color-one);
+    }
+}
+
+#quick-action svg{
+    width: 3.5rem;
+    height: 3.5rem;
+}
+
+#quick-action:hover{
+    background-color: var(--nav-hover-bg-color);
+    border-radius: 10px;
+}

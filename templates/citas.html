@@ -12,7 +12,7 @@
                 </div>
                 <div id="redirect-cita-pendiente">
                     <picture></picture>
-                    <a href="">Ver mas</a>
+                    <a href="{% url 'citaDetalles' cita.id %}">Ver mas</a>
                 </div>
             </div>
         {% endfor %}
@@ -29,7 +29,7 @@
                 </div>
                 <div id="redirect-cita-pendiente">
                     <picture></picture>
-                    <a href="">Ver mas</a>
+                    <a href="{% url 'citaDetalles' cita.id %}">Ver mas</a>
                 </div>
             </div>
         {% endfor %}

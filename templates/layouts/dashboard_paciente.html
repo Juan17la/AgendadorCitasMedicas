@@ -1,47 +1,69 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% block head %}{% endblock head %}
+    <link rel="stylesheet" href="{% static 'static/css/l_dashboard_p.css' %}">
+    {% block head %}
+    <link rel="stylesheet" href="{% static 'static/css/inicio.css' %}">
+    {% endblock head %}
     <title>Inicio</title>
 </head>
 <body>
+    <div class="background">
+        <img src="{% static 'static/images/bg_paciente.svg' %}" alt="">
+    </div>
     <header>
         <div class="logo">
-            <picture></picture>
+            <img src="{% static 'static/images/logo_medicare.svg' %}" alt="" width="55px">
             <h1>Medicare</h1>
         </div>
         <div class="interactive">
             <nav>
                 <ul>
-                    <li><a href="{% url 'pacienteDashboard' %}">Inicio</a></li>
-                    <li><a href="">FQA</a></li>
-                    <li><a href="">Ayuda</a></li>
+                    <li class="link-nav"><a href="{% url 'pacienteDashboard' %}">Inicio</a></li>
+                    <li class="link-nav"><a href="">FQA</a></li>
+                    <li class="link-nav"><a href="">Ayuda</a></li>
                 </ul>
             </nav>
             <div class="user">
-                <img src="" alt="">
+                <img src="{% static 'static/images/no_photo.jpg' %}" alt="user-photo" class="user-img">
                 <div class="brief-info-user">
                     <span>{{ user.nombres }}</span>
-                    <span>{{ user }}</span>
+                    <span> C.I. {{ user }}</span>
                 </div>
             </div>
         </div>
     </header>
     <aside>
-        <div class="title-aside">
-            Home</br>Paciente
-        </div>
-        <div class="content">
-            <ul>
-                <li><a href="">Agendar Citas</a></li>
-                <li><a href="">Mis Citas</a></li>
-                <li><a href="">Historial Medico</a></li>
-                <li><a href="">Recetas</a></li>
-                <li><a href="">Mis Doctores</a></li>
-                <li><a href="">Perfil</a></li>
-                <li><a href="">Ajustes</a></li>
+        <div class="container">
+            <div class="title-aside">
+                <a href="">Home</br>Paciente</a>
+            </div>
+            <ul class="menu-aside">
+                <li>
+                    <a href="">Agendar Citas</a>
+                </li>
+                <li>
+                    <a href="">Mis Citas</a>
+                </li>
+                <li>
+                    <a href="">Historial Medico</a>
+                </li>
+                <li>
+                    <a href="">Recetas</a>
+                </li>
+                <li>
+                    <a href="">Mis Doctores</a>
+                </li>
+                <li>
+                    <a href="">Perfil</a>
+                </li>
+                <li>
+                    <a href="">Ajustes</a>
+                </li>
             </ul>
         </div>
     </aside>

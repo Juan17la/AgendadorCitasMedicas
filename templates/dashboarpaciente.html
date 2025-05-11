@@ -1,11 +1,12 @@
 {% extends "layouts/dashboard_paciente.html" %}
+{% load static %}
 
 {% block content %}
 <main>
     <section id="bienvenida">
         <article>
-            <h1>¡Bienvenido, {{user.nombres}}!</h1>
-            <p>Tu cita mas cerca es en <b>{{ CitaProxima.dias_restantes }}</b></p>
+            <h2>¡Bienvenido, {{user.nombres}}!</h2>
+            <p>Tu cita mas cerca es <b>{{ CitaProxima.dias_restantes }}</b></p>
         </article>
         <article>
             <div id="cita-proxima">
@@ -14,33 +15,27 @@
                     <span>{{CitaProxima.mes_fecha_cita}}</span>
                 </div>
                 <div id="info-cita">
-                    <span>{{CitaProxima.doctor}}</span>
+                    <strong>{{CitaProxima.doctor}}</strong>
                     <p>{{CitaProxima.doctor.especialidad}}</p>
-                    <p>{{CitaProxima.bloque.hora_inicio}}</p>
+                    <strong>{{CitaProxima.bloque.hora_inicio}}</strong>
                 </div>
             </div>
         </article>
     </section>
     <section id="quick-actions">
-        <article id="quick-action-1">
-            <span>Agendar Cita</span>
-            <picture>
-                {% comment %} va el icon {% endcomment %}
-            </picture>
-            <p>Agenda una cita con el doctor de tu preferencia</p>
+        <article id="quick-action">
+            <strong>Agendar Cita</strong>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-clock-icon lucide-calendar-clock"><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h5"/><path d="M17.5 17.5 16 16.3V14"/><circle cx="16" cy="16" r="6"/></svg>
+            <p>Programa tu proxima consulta</p>
         </article>
-        <article id="quick-action-2">
-            <span>Ver Citas</span>
-            <picture>
-                {% comment %} va el icon {% endcomment %}
-            </picture>
-            <p>Consulta tus citas pasadas y futuras</p>
+        <article id="quick-action">
+            <strong>Ver Citas</strong>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-check-icon lucide-clipboard-check"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
+            <p>Consulta tus citas pendientes</p>
         </article>
-        <article id="quick-action-3">
-            <span>Ver Historial Medico</span>
-            <picture>
-                {% comment %} va el icon {% endcomment %}
-            </picture>
+        <article id="quick-action">
+            <strong>Ver Historial Medico</strong>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pill-bottle-icon lucide-pill-bottle"><path d="M18 11h-4a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h4"/><path d="M6 7v13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7"/><rect width="16" height="5" x="4" y="2" rx="1"/></svg>
             <p>Consulta tu historial medico y recetas</p>
         </article>
     </section>
