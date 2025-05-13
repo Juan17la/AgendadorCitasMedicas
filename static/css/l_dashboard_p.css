@@ -5,12 +5,13 @@
     --surface-bg-color: #A1DEFF;
     --surface-bg-color-two: #E2F5FF;
     --surface-bg-color-three: #F0F8FF;
+    --surface-bg-color-four: #c4e4ff;
 
     --nav-hover-bg-color: hwb(208 74% 2%);
 
     --main-text-color: #FFFFFF;
     --text-color-one: #08007B;
-    --text-color-two: #0076B0;
+    --text-color-two: #0076b0;
 }
 
 *{
@@ -246,8 +247,6 @@ aside .container{
 .menu-aside  li:last-child{
     border-bottom: none;
 }
-
-
 
 main {
     grid-area: main;

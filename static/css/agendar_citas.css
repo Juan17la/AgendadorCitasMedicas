@@ -51,4 +51,92 @@ select{
 
     width: 300px;
     height: 40px;
+
+    font-size: 1.3rem;
+    color: rgba(0, 117, 176, 0.774);
+}
+
+/*
+ Aqui van todos los estilos de el calendario desplegable
+*/
+
+.calendar-container {
+  margin: 20px auto;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 15px;
+  background: #fff;
+}
+.month-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.month-title {
+  text-align: center;
+  font-size: 1.2em;
+  color: #333;
+}
+.nav-button {
+  background: #f8f9fa;
+  border: 1px solid #ced4da;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-button:hover {
+  background: #e9ecef;
+}
+.nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px; /* Reducido de 8px a 4px */
+  margin: 10px 0;
+}
+.calendar-header {
+  background: #f8f9fa;
+  padding: 8px 4px;
+  text-align: center;
+  font-weight: bold;
+  color: #666;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+.calendar-day {
+  padding: 8px 4px;
+  text-align: center;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.6em; /* Añadido para reducir tamaño de texto */
+}
+.calendar-day.disabled {
+  background-color: #f8f9fa;
+  color: #dee2e6;
+  cursor: not-allowed;
+  border-color: #f8f9fa;
+}
+.calendar-day.selected {
+  background-color: #007bff;
+  color: white;
+  border-color: #0056b3;
+}
+.calendar-day.available {
+  background-color: #e3f2fd;
+  border-color: #90caf9;
+  font-weight: bold;
+}
+.calendar-day.available:hover {
+  background-color: #bbdefb;
+  transform: scale(1.05);
+}
+.calendar-day.weekend {
+  background-color: #f8f9fa;
 }

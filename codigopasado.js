@@ -1,55 +1,4 @@
-{% extends "layouts/dashboard_paciente.html" %}
-{% load static %}
-{% block head %} 
-<link rel="stylesheet" href="{% static 'static/css/agendar_citas.css' %}"> 
-{% endblock head %}
-
-{% block content %}
-<main>
-  <h1>Agendar Cita</h1>
-  <form action="" method="post">
-    {% csrf_token %}
-    <section>
-      <div class="form-group">
-        <label for="especialidad">Especialidad</label>
-        <select name="especialidad" id="especialidad"></select>
-      </div>
-      <div class="form-group">
-        <label for="doctor">Doctor</label>
-        <select name="doctor" id="doctor" disabled></select>
-      </div>
-    </section>
-
-    <section class="calendar-section">
-      <div class="form-group">
-        <label for="dia">Seleccione una fecha:</label>
-        <div id="calendario-container">
-          
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="horario">Horario disponible:</label>
-        <select name="horario" id="horario" disabled>
-          <option value="">Seleccione un horario</option>
-        </select>
-        <input type="hidden" name="bloque" id="bloque">
-      </div>
-    </section>
-
-    <section>
-      <div class="form-group">
-        <label for="razon">Razón de la cita</label>
-        <textarea name="razon" id="razon" required rows="4"></textarea>
-      </div>
-    </section>
-    <button type="submit">Agendar Cita</button>
-  </form>
-</main>
-{% endblock content %}
-
-{% block script %}
-<script>
-  const especialidadSelect = document.getElementById('especialidad');
+const especialidadSelect = document.getElementById('especialidad');
   const doctorSelect = document.getElementById('doctor');
   const bloqueInput = document.getElementById('bloque');
   const calendarContainer = document.getElementById('calendario-container');
@@ -293,5 +242,3 @@
   });
 
   window.addEventListener('load', listarEspecialidades);
-</script>
-{% endblock script%}

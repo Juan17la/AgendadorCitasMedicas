@@ -62,14 +62,17 @@ def agendarCita(request):
     
 @login_required
 def citas(request):
-    
+    citasP = Cita.objects.filter(paciente=request.user, estado='pendiente')
+    citasC = Cita.objects.filter(paciente=request.user, estado='cancelada')
+    lenCitasP = len(citasP)
+    lenCitasC = len(citasC)
     return render(request, 'citas.html', {
         'nCitasP' : Cita.objects.filter(paciente=request.user, estado='pendiente').count(),
         'nCitasC' : Cita.objects.filter(paciente=request.user, estado='cancelada').count(),
-        'citasP' : Cita.objects.filter(paciente=request.user, estado='pendiente'),
-        'citasC' : Cita.objects.filter(paciente=request.user, estado='cancelada'),
-        'citasLenP' : len(Cita.objects.filter(paciente=request.user, estado='pendiente')), 
-        'citasLenP' : len(Cita.objects.filter(paciente=request.user, estado='cancelada')) 
+        'citasP' : citasP,
+        'citasC' : citasC,
+        'lenCitasP' : lenCitasP,
+        'lenCitasC' : lenCitasC,
     })
     
 @login_required
@@ -128,11 +131,11 @@ def get_fechas(request, doctor_id):
         from datetime import date, timedelta, datetime
         from collections import defaultdict
         
-        # Obtener fecha actual y límite de 8 semanas
+        # fecha actual y límite de 8 semanas
         hoy = date.today()
         limite = hoy + timedelta(weeks=8)
         
-        # Obtener el doctor y sus horarios
+        # Obtener el doctor y  horarios
         doctor = Doctor.objects.select_related('user').get(id=doctor_id)
         horarios_semanales = HorarioSemanal.objects.filter(
             doctor=doctor,
@@ -144,7 +147,7 @@ def get_fechas(request, doctor_id):
                 'error': 'No se encontraron horarios configurados para este doctor'
             }, status=404)
         
-        # Diccionario para almacenar bloques por fecha
+        #para almacenar bloques por fecha
         bloques_por_fecha = defaultdict(list)
         fecha_actual = hoy
         
@@ -152,14 +155,14 @@ def get_fechas(request, doctor_id):
         while fecha_actual <= limite:
             dia_semana = fecha_actual.weekday()  # 0=Lunes, 6=Domingo
             
-            # Solo procesar días de lunes a viernes (0-4)
+            # procesar días de lunes a viernes 
             if dia_semana < 5:
                 for horario in horarios_semanales:
-                    # Obtener las jornadas para este día de la semana
+                    # las jornadas para este día de la semana
                     jornadas = horario.jornadas.filter(dia_semana=dia_semana)
                     
                     for jornada in jornadas:
-                        # Obtener bloques disponibles para esta fecha
+                        # bloques disponibles para esta fecha
                         bloques = BloqueHorario.objects.filter(
                             doctor=doctor,
                             jornada=jornada,
@@ -167,7 +170,6 @@ def get_fechas(request, doctor_id):
                             disponible=True
                         ).order_by('hora_inicio')
                         
-                        # Si no hay bloques y la fecha es futura, crearlos
                         if not bloques.exists() and fecha_actual >= hoy:
                             hora_actual = datetime.combine(fecha_actual, jornada.hora_inicio)
                             hora_fin = datetime.combine(fecha_actual, jornada.hora_fin)
@@ -189,7 +191,7 @@ def get_fechas(request, doctor_id):
                                 })
                                 hora_actual += duracion
                         else:
-                            # Agregar bloques existentes que estén disponibles
+                            # Agregar bloques existentes
                             for bloque in bloques:
                                 bloques_por_fecha[fecha_actual.strftime('%Y-%m-%d')].append({
                                     'id': bloque.id,
@@ -199,7 +201,7 @@ def get_fechas(request, doctor_id):
             
             fecha_actual += timedelta(days=1)
         
-        # Convertir el diccionario a lista de fechas disponibles
+        #  el diccionario a lista de fechas disponibles
         fechas_disponibles = [
             {
                 'fecha': fecha,
@@ -207,7 +209,7 @@ def get_fechas(request, doctor_id):
                 'bloques': bloques
             }
             for fecha, bloques in bloques_por_fecha.items()
-            if bloques  # Solo incluir fechas que tienen bloques disponibles
+            if bloques  
         ]
         
         return JsonResponse(fechas_disponibles, safe=False)
