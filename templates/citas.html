@@ -1,37 +1,65 @@
+{% extends "layouts/dashboard_paciente.html" %}
+{% load static %}
+{% block head %} 
+<link rel="stylesheet" href="{% static 'static/css/citas.css' %}"> 
+{% endblock head %}
+
+{% block content %}
 <main>
     <h1>Mis Citas Medicas</h1>
-    <section id="citas-medicaspendientes">
-        <h2>Pendientes</h2>
-        <span>{{nCitasP}}</span>
-        {% for cita in citasP %}
-            <div class="cita-pendiente">
-                <div id="info-cita-pendiente">
-                    <h3>{{cita.doctor.especialidad}}</h3>
-                    <p>Fecha: {{cita.bloque.fecha}}</p>
-                    <p>Hora: {{cita.bloque.hora_inicio}}</p>
-                </div>
-                <div id="redirect-cita-pendiente">
-                    <picture></picture>
-                    <a href="{% url 'citaDetalles' cita.id %}">Ver mas</a>
-                </div>
+    <div class="container">
+        <section id="citas-medicaspendientes">
+            <div class="section-title">
+                <h2>Pendientes</h2>
+                <p>{{nCitasP}}</p>
             </div>
-        {% endfor %}
-    </section>
-    <section id="citas-canceladas">
-        <h2>Canceladas</h2>
-        <span>{{nCitasC}}</span>
-        {% for cita in citasC %}
-            <div class="cita-pendiente">
-                <div id="info-cita-pendiente">
-                    <h3>{{cita.doctor.especialidad}}</h3>
-                    <p>Fecha: {{cita.bloque.fecha}}</p>
-                    <p>Hora: {{cita.bloque.hora_inicio}}</p>
+            {% if citasLenP > 0 %}
+            {% for cita in citasP %}
+                <div class="cita-pendiente">
+                    <div id="info-cita-pendiente">
+                        <h3>{{cita.doctor.especialidad}}</h3>
+                        <p>Fecha: {{cita.bloque.fecha}}</p>
+                        <p>Hora: {{cita.bloque.hora_inicio}}</p>
+                    </div>
+                    <div id="redirect-cita-pendiente">
+                        <picture></picture>
+                        <a href="{% url 'citaDetalles' cita.id %}">Ver mas</a>
+                    </div>
                 </div>
-                <div id="redirect-cita-pendiente">
-                    <picture></picture>
-                    <a href="{% url 'citaDetalles' cita.id %}">Ver mas</a>
-                </div>
+            {% endfor %}
+            {% else %}
+            <div class="no-citas-message">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-off-icon lucide-circle-off"><path d="m2 2 20 20"/><path d="M8.35 2.69A10 10 0 0 1 21.3 15.65"/><path d="M19.08 19.08A10 10 0 1 1 4.92 4.92"/></svg>
+                <p>No hay citas pendientes!</p>
             </div>
-        {% endfor %}
-    </section>
+            {% endif %}
+        </section>
+        <section id="citas-canceladas">
+            <div class="section-title">
+                <h2>Canceladas</h2>
+                <p>{{nCitasC}}</p>
+            </div>
+            {% if citasLenC > 0 %}
+            {% for cita in citasC %}
+                <div class="cita-pendiente">
+                    <div id="info-cita-pendiente">
+                        <h3>{{cita.doctor.especialidad}}</h3>
+                        <p>Fecha: {{cita.bloque.fecha}}</p>
+                        <p>Hora: {{cita.bloque.hora_inicio}}</p>
+                    </div>
+                    <div id="redirect-cita-pendiente">
+                        <picture></picture>
+                        <a href="{% url 'citaDetalles' cita.id %}">Ver mas</a>
+                    </div>
+                </div>
+            {% endfor %}
+            {% else %}
+            <div class="no-citas-message">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-off-icon lucide-circle-off"><path d="m2 2 20 20"/><path d="M8.35 2.69A10 10 0 0 1 21.3 15.65"/><path d="M19.08 19.08A10 10 0 1 1 4.92 4.92"/></svg>
+                <p>No hay citas canceladas!</p>
+            </div>
+            {% endif %}
+        </section>
+    </div>
 </main>
+{% endblock content %}

@@ -6,9 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'static/css/l_dashboard_p.css' %}">
-    {% block head %}
-    <link rel="stylesheet" href="{% static 'static/css/inicio.css' %}">
-    {% endblock head %}
+    {% block head %}{% endblock head %}
     <title>Inicio</title>
 </head>
 <body>
@@ -44,10 +42,10 @@
             </div>
             <ul class="menu-aside">
                 <li>
-                    <a href="">Agendar Citas</a>
+                    <a href="{% url 'agendarcita' %}">Agendar Citas</a>
                 </li>
                 <li>
-                    <a href="">Mis Citas</a>
+                    <a href="{% url 'citas' %}">Mis Citas</a>
                 </li>
                 <li>
                     <a href="">Historial Medico</a>
@@ -70,4 +68,5 @@
     {% block content %}
     {% endblock %}
 </body>
+{% block script %}{% endblock script %}
 </html>

@@ -1,0 +1,74 @@
+main{
+    margin: 1rem;
+    display: flex;
+
+    color: var(--text-color-one);
+    background-color: var(--surface-bg-color-two);
+    border: 3px solid var(--header-border-color);
+    cursor: pointer;
+    transition: 0.2s ease-out;
+    border-radius: 8px;
+    height: fit-content;
+    gap: 0.5rem;
+}
+
+.container{
+    display: flex;
+    gap: 0.5rem;
+}
+
+section{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    color: var(--text-color-one);
+    background-color: var(--surface-bg-color);
+    border: 3px solid var(--header-border-color);
+    transition: 0.2s ease-out;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    gap: 0.5rem;    
+    width: 100%;
+    height: 100%;
+}
+
+.section-title{
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    height: 100%;
+    gap: 0.5rem;
+
+    & p{
+        color: green;
+        font-weight: bold;
+        font-size: 1.4rem;
+    }
+}
+
+.cita-pendiente, .cita-cancelada{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 8px;
+    width: 100%;
+
+    background-color: var(--surface-bg-color-three);
+    border: 2px solid var(--header-border-color);
+}
+
+.no-citas-message{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: 1rem;
+    padding: 2rem 0.5rem;
+    
+    background-color: var(--surface-bg-color-three);
+    border: 2px solid var(--header-border-color);
+    border-radius: 8px;
+}

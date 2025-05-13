@@ -5,13 +5,12 @@ section{
     border: 3px solid var(--header-border-color);
     transition: 0.2s ease-out;
     border-radius: 8px;
-
-    padding: 0.5rem 1.2rem;
 }
 
 #bienvenida{
     justify-content: space-between;
     align-items: center;
+    padding: 0.5rem 1.2rem;
 }
 
 #bienvenida article{
@@ -61,6 +60,7 @@ section{
     align-items: center;
     justify-content: center;
     gap: 1rem;
+    padding: 0.8rem 1.2rem;
 }
 
 #quick-action{

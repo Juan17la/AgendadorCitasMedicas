@@ -1,18 +1,26 @@
-<main>
-    <div class="container">
-        <h1 class="text-center">Cita Agendada</h1>
-        <div class="row">
-            <div class="col-md-12">
-                <h2>Detalles de la Cita</h2>
-                <p><strong>Doctor:</strong> {{ cita.doctor }}</p>
-                <p><strong>Paciente:</strong> {{ cita.paciente.nombres }}</p>
-                <p><strong>Fecha:</strong> {{ cita.bloque.fecha }}</p>
-                <p><strong>Especialidad:</strong> {{ cita.doctor.especialidad }}</p>
-                <p><strong>Motivo:</strong> {{ cita.motivo }}</p>
-                <p><strong>Estado:</strong> {{ cita.estado }}</p>
-                <p><strong>Consultorio:</strong> {{ cita.doctor.consultorio }}</p>
+{% extends "layouts/dashboard_paciente.html" %}
+{% load static %}
+{% block head %} 
+<link rel="stylesheet" href="{% static 'static/css/cita_detalles.css' %}"> 
+{% endblock head %}
 
+{% block content %}
+    <main>
+        <div class="container">
+            <h1 class="text-center">Cita Agendada</h1>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Detalles de la Cita</h2>
+                    <p><strong>Doctor:</strong> {{ cita.doctor }}</p>
+                    <p><strong>Paciente:</strong> {{ cita.paciente.nombres }}</p>
+                    <p><strong>Fecha:</strong> {{ cita.bloque.fecha }}</p>
+                    <p><strong>Especialidad:</strong> {{ cita.doctor.especialidad }}</p>
+                    <p><strong>Motivo:</strong> {{ cita.motivo }}</p>
+                    <p><strong>Estado:</strong> {{ cita.estado }}</p>
+                    <p><strong>Consultorio:</strong> {{ cita.doctor.consultorio }}</p>
+
+                </div>
             </div>
         </div>
-    </div>
-</main>
+    </main>
+{% endblock content %}

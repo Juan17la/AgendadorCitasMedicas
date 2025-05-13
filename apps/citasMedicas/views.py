@@ -62,11 +62,14 @@ def agendarCita(request):
     
 @login_required
 def citas(request):
+    
     return render(request, 'citas.html', {
         'nCitasP' : Cita.objects.filter(paciente=request.user, estado='pendiente').count(),
         'nCitasC' : Cita.objects.filter(paciente=request.user, estado='cancelada').count(),
         'citasP' : Cita.objects.filter(paciente=request.user, estado='pendiente'),
         'citasC' : Cita.objects.filter(paciente=request.user, estado='cancelada'),
+        'citasLenP' : len(Cita.objects.filter(paciente=request.user, estado='pendiente')), 
+        'citasLenP' : len(Cita.objects.filter(paciente=request.user, estado='cancelada')) 
     })
     
 @login_required
