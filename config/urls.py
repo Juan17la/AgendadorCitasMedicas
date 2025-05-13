@@ -30,6 +30,7 @@ urlpatterns = [
     path('citas/', citasMedicas_views.citas, name='citas'),
     
     path('agendarcita/', citasMedicas_views.agendarCita, name='agendarcita'),
+    path('cancelarcita/<int:cita_id>', citasMedicas_views.cancelarCita, name='cancelarCita'),
     path('cita/<int:cita_id>', citasMedicas_views.citaDetalles, name='citaDetalles'),
     path('dashboarpaciente/', citasMedicas_views.pacienteDashboard, name='pacienteDashboard'),
     

@@ -6,6 +6,7 @@ from django.views.decorators.http import require_GET
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 
 '''-------------------------------- 
 Vistas Templates
@@ -59,6 +60,14 @@ def agendarCita(request):
     return render(request, 'agendarcita.html', {
         'especialidades' : Especialidad.objects.all(),
     })
+
+@login_required
+def cancelarCita(request, cita_id):
+    citaCancelar = get_object_or_404(Cita, id=cita_id, estado='pendiente')
+    citaCancelar.estado = 'cancelada'
+    citaCancelar.save()
+    return redirect('citas')
+
     
 @login_required
 def citas(request):

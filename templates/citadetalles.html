@@ -1,26 +1,45 @@
 {% extends "layouts/dashboard_paciente.html" %}
 {% load static %}
 {% block head %} 
-<link rel="stylesheet" href="{% static 'static/css/cita_detalles.css' %}"> 
+<link rel="stylesheet" href="{% static 'static/css/detalles.css' %}"> 
 {% endblock head %}
 
 {% block content %}
     <main>
         <div class="container">
-            <h1 class="text-center">Cita Agendada</h1>
-            <div class="row">
-                <div class="col-md-12">
-                    <h2>Detalles de la Cita</h2>
-                    <p><strong>Doctor:</strong> {{ cita.doctor }}</p>
-                    <p><strong>Paciente:</strong> {{ cita.paciente.nombres }}</p>
-                    <p><strong>Fecha:</strong> {{ cita.bloque.fecha }}</p>
-                    <p><strong>Especialidad:</strong> {{ cita.doctor.especialidad }}</p>
-                    <p><strong>Motivo:</strong> {{ cita.motivo }}</p>
-                    <p><strong>Estado:</strong> {{ cita.estado }}</p>
-                    <p><strong>Consultorio:</strong> {{ cita.doctor.consultorio }}</p>
-
-                </div>
+            <h2>{{ cita.bloque.fecha }}, Estado: {{ cita.estado }}</h1>
+            <section>
+                <h2>Detalles de la Cita</h2>
+                <p><strong>Doctor:</strong> {{ cita.doctor }}</p>
+                <p><strong>Paciente:</strong> {{ cita.paciente.nombres }}</p>
+                <p><strong>Fecha:</strong> {{ cita.bloque.fecha }}</p>
+                <p><strong>Especialidad:</strong> {{ cita.doctor.especialidad }}</p>
+                <p><strong>Motivo:</strong> {{ cita.motivo }}</p>
+                <p><strong>Consultorio:</strong> {{ cita.doctor.consultorio }}</p>
+                <article>
+                    <button id="cancelar-cita">Cancelar Cita</button>
+                    <button id="editar-cita">Editar Cita</button>
+                    <button id="regresar">Regresar</button>
+                </article>   
+            </section>
+        </div>
+        <div class="window-confirm">
+            <h2>¿Estas seguro de que quieres cancelar tu cita?</h2>
+            <div>
+                <button id="confirmar-proceso">Confirmar</button>
+                <button id="cancelar-proceso">Cancelar</button>
             </div>
         </div>
     </main>
-{% endblock content %}
+
+    {% endblock content %}
+
+{% block script %}
+<script>
+    const cancelarBtn = document.getElementById('cancelar-cita')
+
+    cancelarBtn.addEventListener('click', () =>{
+        
+    })
+</script>
+{% endblock script %}
