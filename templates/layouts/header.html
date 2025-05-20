@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicare</title>
+    <link rel="stylesheet" href="{% static 'static/css/header.css' %}">
+    {% block head %}{% endblock head %}
+</head>
+<body>
+    <div class="background">
+        <img src="{% static 'static/images/bg_paciente.svg' %}" alt="">
+    </div>
+    <header>
+        <div class="logo">
+            <img src="{% static 'static/images/logo_medicare.svg' %}" alt="" width="55px">
+            <h1>Medicare</h1>
+        </div>
+        <div class="interactive">
+            <ul>
+                <li class="link-nav"><a href="">Inicio</a></li>
+                <li class="link-nav"><a href="{% url 'signup' %}">Registrarse</a></li>
+                <li class="link-nav"><a href="{% url 'signin' %}">Iniciar Sesion</a></li>
+                <li class="link-nav"><a href="">FQA</a></li>
+                <li class="link-nav"><a href="">Ayuda</a></li>
+            </ul>
+        </div>
+    </header>
+    {% block content %}{% endblock content %}
+</body>

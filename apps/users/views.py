@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import UserCreationForm, UserAuthForm
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -13,7 +14,7 @@ def signUp_view(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
             login(request, user)
-            return redirect('index')
+            return redirect('pacienteDashboard')
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
@@ -28,7 +29,7 @@ def signIn_view(request):
             user = authenticate(request, username=cedula_ti, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('index')  
+                return redirect('pacienteDashboard')  
             else:
                 form.add_error(None, 'Cédula o contraseña inválidos')
     else:
@@ -37,4 +38,4 @@ def signIn_view(request):
 
 def signOut_view(request):
     logout(request)
-    return redirect('index')
+    return redirect('pacienteDashboard')

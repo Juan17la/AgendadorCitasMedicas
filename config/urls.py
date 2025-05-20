@@ -19,7 +19,7 @@ from django.urls import path
 from apps.core import views as core_views
 from apps.users import views as users_views
 from apps.citasMedicas import views as citasMedicas_views
-
+ 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', core_views.index, name='index'),

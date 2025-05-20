@@ -1,24 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medicare</title>
-</head>
-<body>
-    <h1>Medicar v0.1</h1>
-    <ul>
-        {% if user.is_authenticated%}
-        <li><a href="signout/">Logout</a></li>
-        <li><a href="dashboarpaciente/">Dashboard</a></li>
-        <li><a href="agendarcita/">Agendar Cita</a></li>
-        <li><a href="citas/">Mis Citas</a></li>
-        {% else %}
-        <li><a href="signin">Login</a></li>
-        <li><a href="signup/">Registrar</a></li>
-        {% endif %}
-        <li><a href="">FQA</a></li>
-        <li><a href="">Support</a></li>
-    </ul>
-</body>
-</html>
+{% extends "layouts/header.html" %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'static/css/index.css' %}">
+{% endblock head %}
+{% block content %}
+<main>
+    <article  id="quick-accecs">
+        <h1>¿Necesitas agendar una cita? </h1>
+        <button>¡Registrate Ahora!</button>
+        <p>¡Registrate con unos pocos pasos!</p>
+    </article>
+
+    <article id="como-funciona">
+        <h1>Como funciona?</h1>
+        <div id="steps">
+            <div id="step">
+                    <img src="" alt="">
+                    Elige una especialidad
+                    <a href="">Ver mas</a>
+                </div>
+                <div id="step">
+                    <img src="" alt="">
+                    Escoje una la fecha y hora
+                    <a href="">Ver mas</a>
+                </div>
+                <div id="step">
+                    <img src="" alt="">
+                    Elige una especialidad
+                    <a href="">Ver mas</a>
+                </div>
+        </div>
+        <div id="container-article">
+            <div id="benefits">
+                <h2>Beneficios</h2>
+                <ul id="benefits-list">
+                    <li><span>✅</span> Rápido y fácil.</li>
+                    <li><span>✅</span> Acceso desde cualquier dispositivo.</li>
+                    <li><span>✅</span> Sistema seguro y confiable.</li>
+                    <li><span>✅</span> Agenda y Gestiona tus citas en segundos.</li>
+                </ul>
+            </div>
+            <div id="contacto">
+                <h2>Contacto</h2>
+                <ul id="contacto-list">
+                    <li><strong>Gmail: </strong> emailprofesional@direccion.com</li>
+                    <li><strong>Teléfono: </strong> +57 1651826845</li>
+                    <li><strong>Celular: </strong> +57 1651826845</li>
+                </ul>
+            </div>
+        </div>
+    </article>
+</main>
+
+<footer>
+    <div class="logo">
+        <img src="{% static 'static/images/logo_medicare.svg' %}" alt="" width="55px">
+        <h1>Medicare</h1>
+    </div>
+    <p>© 2025 Medicare. Todos los derechos reservados.</p>
+    <p>Este sitio web es solo para fines informativos y no sustituye la consulta médica profesional.</p>
+</footer>
+{% endblock content %}

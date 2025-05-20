@@ -1,10 +1,23 @@
+{% extends "layouts/header.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'static/css/signin.css' %}">
+{% endblock head %}
+{% block content %}
 <main>
-    <h1>Iniciar Sesion</h1>
-    <div class="article">
+    <article>
+        <h1>Iniciar Sesion</h1>
+        <p>¿No tienes una cuenta creada? <a href="{% url 'signup' %}">Registrate</a></p>
         <form action="" method='post'>
             {% csrf_token %}
-            {{form}}
+            {{form.as_div}}
+            <div class="condiciones">
+                <a href="">Terminos y Condiciones</a>
+                <a href="">Politica y Privacidad</a>
+            </div>
             <button>Iniciar Sesion</button>
         </form>
-    </div>
+    </article>
 </main>
+{% endblock content %}
