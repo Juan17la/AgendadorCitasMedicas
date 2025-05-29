@@ -17,29 +17,38 @@
                 <p><strong>Motivo:</strong> {{ cita.motivo }}</p>
                 <p><strong>Consultorio:</strong> {{ cita.doctor.consultorio }}</p>
                 <article>
+                    {% if cita.estado == "pendiente" %}
                     <button id="cancelar-cita">Cancelar Cita</button>
-                    <button id="editar-cita">Editar Cita</button>
-                    <button id="regresar">Regresar</button>
+                    <a href="{% url 'editar_cita' cita.id %}" id="editar-cita">Editar Cita</a>
+                    {% endif%}
+                    <a href="{% url 'citas' %}" id="regresar">Regresar</a>
                 </article>   
             </section>
         </div>
         <div class="window-confirm">
-            <h2>¿Estas seguro de que quieres cancelar tu cita?</h2>
             <div>
-                <button id="confirmar-proceso">Confirmar</button>
+                <h2>¿Estas seguro de que quieres cancelar tu cita?</h2>
+                <a href="{% url 'cancelar_cita' cita.id %}" id="confirmar-proceso">Confirmar</a>
                 <button id="cancelar-proceso">Cancelar</button>
             </div>
         </div>
     </main>
-
     {% endblock content %}
 
 {% block script %}
 <script>
     const cancelarBtn = document.getElementById('cancelar-cita')
+    const cancelarCancelacion = document.getElementById('cancelar-proceso')
 
     cancelarBtn.addEventListener('click', () =>{
-        
+        const windowConfirm = document.querySelector('.window-confirm')
+        windowConfirm.style.display = 'flex'
     })
+
+    cancelarCancelacion.addEventListener('click', () =>{
+        const windowConfirm = document.querySelector('.window-confirm')
+        windowConfirm.style.display = 'none'
+    })
+
 </script>
 {% endblock script %}

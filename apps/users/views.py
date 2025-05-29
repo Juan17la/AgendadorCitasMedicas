@@ -14,7 +14,7 @@ def signUp_view(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
             login(request, user)
-            return redirect('pacienteDashboard')
+            return redirect('paciente_dashboard')
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
@@ -28,14 +28,26 @@ def signIn_view(request):
             password = form.cleaned_data['password']
             user = authenticate(request, username=cedula_ti, password=password)
             if user is not None:
-                login(request, user)
-                return redirect('pacienteDashboard')  
+                if user.is_active:
+                    login(request, user)
+                    # Redirige según el rol del usuario
+                    if user.rol == 'Doctor':
+                        return redirect('paciente_dashboard')
+                    elif user.rol == 'Administrador':
+                        return redirect('adminDashboard')
+                    else:
+                        return redirect('paciente_dashboard')
+                else:
+                    form.add_error(None, 'Tu cuenta está desactivada.')
             else:
                 form.add_error(None, 'Cédula o contraseña inválidos')
     else:
         form = UserAuthForm()
-    return render(request, 'signin.html', {'form': form})
+    
+    return render(request, 'signin.html', {
+        'form': form,
+    })
 
 def signOut_view(request):
     logout(request)
-    return redirect('pacienteDashboard')
+    return redirect('paciente_dashboard')

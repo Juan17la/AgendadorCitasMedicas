@@ -1,0 +1,32 @@
+{% extends "layouts/dashboard_paciente.html" %}
+{% load static %}
+{% block head %} 
+<link rel="stylesheet" href="{% static 'static/css/doctores.css' %}"> 
+{% endblock head %}
+
+{% block content %}
+<main>
+    <h1>Mis Doctores</h1>
+    <div class="container">
+        <section id="doctores-list">
+            <div class="section-title">
+                <h2>Lista de Doctores</h2>
+            </div>
+            {% for doctor in doctores %}
+                <div class="doctor-card">
+                    <div class="doctor-info">
+                        <h3>{{ doctor.nombre }} {{ doctor.apellido }}</h3>
+                        <p>Especialidad: {{ doctor.especialidad }}</p>
+                        <p>Consultorio: {{ doctor.consultorio }}</p>
+                    </div>
+                    <div class="doctor-actions">
+                        <a href="">Ver Detalles</a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No hay doctores registrados.</p>
+            {% endfor %}
+        </section>
+    </div>
+</main>
+{% endblock content %}

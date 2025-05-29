@@ -4,7 +4,7 @@
 
     --surface-bg-color: #A1DEFF;
     --surface-bg-color-two: #E2F5FF;
-    --surface-bg-color-three: #F0F8FF;
+    --surface-bg-color-three: #fdfeff;
     --surface-bg-color-four: #c4e4ff;
 
     --nav-hover-bg-color: hwb(208 74% 2%);
@@ -12,7 +12,11 @@
     --main-text-color: #FFFFFF;
     --text-color-one: #08007B;
     --text-color-two: #0076b0;
-    --text-color-three: #000000;
+    --text-color-three: #0021A3;
+    --text-color-four: #000000;
+
+    --button-bg-color: #1E88E5;
+    --button-border-color: #1565C0;
 }
 
 *{

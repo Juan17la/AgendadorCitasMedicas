@@ -43,21 +43,13 @@ class UserCreationForm(forms.ModelForm):
             'password': forms.PasswordInput(),
         }
 
-class UserAuthForm(forms.ModelForm):
+class UserAuthForm(forms.Form):
     cedula_ti = forms.RegexField(
         regex=r'^\d+$',
         max_length=150,
         widget=forms.TextInput(attrs={'placeholder': 'Número de cédula o TI'})
-        )
+    )
     
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'placeholder': 'Contraseña'}),
     )
-    
-    class Meta:
-        model = User
-        fields = ('cedula_ti', 'password')
-        widgets = {
-            'password':forms.PasswordInput(),
-        }
-    

@@ -1,0 +1,9 @@
+
+
+- Se muestra un elemento de texto que dice "Editar Información Doctor".
+- Se muestra un selector (select) con todas las especializaciones disponibles y la actual seleccionada.
+- Se muestra un botón para desplegar un calendario semanal en el que se seleccionan los días de trabajo del doctor, con los actuales preseleccionados.
+- Se muestra un campo de entrada (input) de tipo hora para indicar el inicio de la jornada, con la hora actual preestablecida.
+- Se muestra un campo de entrada (input) de tipo hora para indicar el final de la jornada, con la hora actual preestablecida.
+- Se muestra un selector (select) para seleccionar un consultorio disponible, con el consultorio actual preseleccionado.
+- Se muestra un botón para enviar el formulario y guardar los cambios.

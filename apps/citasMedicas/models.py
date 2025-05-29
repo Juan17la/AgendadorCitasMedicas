@@ -3,8 +3,6 @@ from apps.users.models import User
 from django.utils import timezone
 from datetime import datetime, timedelta
 
-# MODELOS BÁSICOS 
-
 class Especialidad(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(max_length=2000, blank=True, null=True)
@@ -49,7 +47,6 @@ class JornadaDiaria(models.Model):
         """
         from datetime import datetime, timedelta
 
-        # Solo generar si el día de la semana coincide
         if fecha.weekday() != self.dia_semana:
             return []
 
@@ -58,7 +55,6 @@ class JornadaDiaria(models.Model):
         hora_fin = datetime.combine(fecha, self.hora_fin)
 
         while hora_actual + timedelta(minutes=self.duracion_bloque) <= hora_fin:
-            # Verificar si ya existe un bloque para esta hora
             bloque, creado = BloqueHorario.objects.get_or_create(
                 doctor=doctor,
                 jornada=self,
@@ -91,7 +87,6 @@ class HorarioSemanal(models.Model):
         fecha_actual = fecha_inicio
 
         while fecha_actual <= fecha_fin:
-            # Solo procesar días de lunes a viernes (0-4)
             if fecha_actual.weekday() < 5:
                 for jornada in self.jornadas.all():
                     bloques.extend(jornada.generar_bloques(fecha_actual, self.doctor))
@@ -113,7 +108,6 @@ class BloqueHorario(models.Model):
         return f"{self.fecha} {self.hora_inicio}-{self.hora_fin} ({estado})"
 
 
-#  CITAS 
 
 class Cita(models.Model):
     especialidad = models.ForeignKey(Especialidad, on_delete=models.CASCADE, related_name='citas', null=True)

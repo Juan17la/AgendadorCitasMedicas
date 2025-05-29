@@ -61,6 +61,8 @@ def agendarCita(request):
         'especialidades' : Especialidad.objects.all(),
     })
 
+
+
 @login_required
 def cancelarCita(request, cita_id):
     citaCancelar = get_object_or_404(Cita, id=cita_id, estado='pendiente')
@@ -73,29 +75,50 @@ def cancelarCita(request, cita_id):
 def citas(request):
     citasP = Cita.objects.filter(paciente=request.user, estado='pendiente')
     citasC = Cita.objects.filter(paciente=request.user, estado='cancelada')
+    citasA = Cita.objects.filter(paciente=request.user, estado='confirmada')
     lenCitasP = len(citasP)
     lenCitasC = len(citasC)
+    lenCitasA = len(citasA)
     return render(request, 'citas.html', {
         'nCitasP' : Cita.objects.filter(paciente=request.user, estado='pendiente').count(),
         'nCitasC' : Cita.objects.filter(paciente=request.user, estado='cancelada').count(),
+        'nCitasA' : Cita.objects.filter(paciente=request.user, estado='confirmada').count(),
         'citasP' : citasP,
         'citasC' : citasC,
+        'citasA' : citasA,
         'lenCitasP' : lenCitasP,
         'lenCitasC' : lenCitasC,
+        'lenCitasA' : lenCitasA,
     })
-    
+
 @login_required
 def citaDetalles(request, cita_id):
     cita = get_object_or_404(Cita, id=cita_id)
     return render(request, 'citadetalles.html', {
         'cita': cita,
     })
-    
+
+@login_required
+def historial(request):
+    citas = Cita.objects.filter(paciente=request.user).order_by('-id')
+    return render(request, 'historial.html', {
+        'citas': citas,
+        'nCitas' : citas.count()
+    })
+
+def doctores(request):
+    doctores = Doctor.objects.filter(user__is_active=True)
+    return render(request, 'doctores.html', {
+        'doctores': doctores,
+        'nDoctores' : doctores.count()
+    })
+
 @login_required
 def pacienteDashboard(request):
     return render(request, 'dashboarpaciente.html', {
         'CitaProxima' : Cita.objects.filter(paciente=request.user, estado='pendiente').first(),
     })
+
 '''-------------------------------- 
 Agendar Citas Funciones 
 -------------------------------'''
@@ -250,3 +273,43 @@ def get_bloques(request, jornada_id, doctor_id):
         return JsonResponse(data, safe=False, status=200)
     except Exception as e:
         return JsonResponse({'error': 'Ocurrio un error al obtener los doctores'}, status=500)
+
+@login_required
+def editarCita(request, cita_id):
+    cita = get_object_or_404(Cita, id=cita_id, paciente=request.user, estado='pendiente')
+    if request.method == 'POST':
+        bloque_id = request.POST.get('bloque')
+        razon = request.POST.get('razon')
+        if not bloque_id or not razon:
+            return render(request, 'agendarcita.html', {
+                'error': 'Por favor, complete todos los campos requeridos.',
+                'editando': True,
+                'cita': cita,
+            })
+        try:
+            nuevo_bloque = BloqueHorario.objects.get(id=bloque_id, disponible=True)
+            # Liberar el bloque anterior
+            cita.bloque.disponible = True
+            cita.bloque.save()
+            # Asignar el nuevo bloque y motivo
+            cita.bloque = nuevo_bloque
+            cita.motivo = razon
+            cita.doctor = nuevo_bloque.doctor
+            # La especialidad NO cambia
+            cita.save()
+            # Marcar el nuevo bloque como no disponible
+            nuevo_bloque.disponible = False
+            nuevo_bloque.save()
+            return redirect('cita_detalles', cita_id=cita.id)
+        except BloqueHorario.DoesNotExist:
+            return render(request, 'agendarcita.html', {
+                'error': 'El horario seleccionado ya no está disponible.',
+                'editando': True,
+                'cita': cita,
+            })
+    else:
+        return render(request, 'agendarcita.html', {
+            'editando': True,
+            'cita': cita,
+        })
+

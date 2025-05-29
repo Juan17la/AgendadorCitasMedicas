@@ -28,11 +28,14 @@ urlpatterns = [
     path('signout/', users_views.signOut_view, name='signout'),
     
     path('citas/', citasMedicas_views.citas, name='citas'),
+    path('historial/', citasMedicas_views.historial, name='historial'),
+    path('doctores/', citasMedicas_views.doctores, name='doctores'),
     
-    path('agendarcita/', citasMedicas_views.agendarCita, name='agendarcita'),
-    path('cancelarcita/<int:cita_id>', citasMedicas_views.cancelarCita, name='cancelarCita'),
-    path('cita/<int:cita_id>', citasMedicas_views.citaDetalles, name='citaDetalles'),
-    path('dashboarpaciente/', citasMedicas_views.pacienteDashboard, name='pacienteDashboard'),
+    path('agendarcita/', citasMedicas_views.agendarCita, name='agendar_cita'),
+    path('editar-cita/<int:cita_id>', citasMedicas_views.editarCita, name='editar_cita'),
+    path('cancelarcita/<int:cita_id>', citasMedicas_views.cancelarCita, name='cancelar_cita'),
+    path('cita/<int:cita_id>', citasMedicas_views.citaDetalles, name='cita_detalles'),
+    path('dashboarpaciente/', citasMedicas_views.pacienteDashboard, name='paciente_dashboard'),
     
     #peticiones ajax
     path('agendarcita/get_especialidades/', citasMedicas_views.get_especialidades, name='get_especialidades'),

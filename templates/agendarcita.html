@@ -6,44 +6,47 @@
 
 {% block content %}
 <main>
-  <h1>Agendar Cita</h1>
-  <form action="" method="post">
-    {% csrf_token %}
-    <section>
-      <div class="form-group">
-        <label for="especialidad">Especialidad</label>
-        <select name="especialidad" id="especialidad"></select>
-      </div>
-      <div class="form-group">
-        <label for="doctor">Doctor</label>
-        <select name="doctor" id="doctor" disabled></select>
-      </div>
-    </section>
-
-    <section class="calendar-section">
-      <div class="form-group">
-        <label for="dia">Seleccione una fecha:</label>
-        <div id="calendario-container">
-          
+  <article>
+    <h1>Agendar Cita</h1>
+    <form action="" method="post">
+      {% csrf_token %}
+      <section>
+        <div class="form-group">
+          <label for="especialidad">Especialidad</label>
+          <select name="especialidad" id="especialidad"></select>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="horario">Horario disponible:</label>
-        <select name="horario" id="horario" disabled>
-          <option value="">Seleccione un horario</option>
-        </select>
-        <input type="hidden" name="bloque" id="bloque">
-      </div>
-    </section>
+        <div class="form-group">
+          <label for="doctor">Doctor</label>
+          <select name="doctor" id="doctor" disabled></select>
+        </div>
+      </section>
 
-    <section>
-      <div class="form-group">
-        <label for="razon">Razón de la cita</label>
-        <textarea name="razon" id="razon" required rows="4"></textarea>
-      </div>
-    </section>
-    <button type="submit">Agendar Cita</button>
-  </form>
+      <section class="calendar-section">
+        <div class="form-group">
+          <label for="dia">Seleccione una fecha:</label>
+          <div id="calendario-container"></div>
+        </div>
+        <div class="form-group">
+          <label for="horario">Horario disponible:</label>
+          <select name="horario" id="horario" disabled>
+            <option value="">Seleccione un horario</option>
+          </select>
+          <input type="hidden" name="bloque" id="bloque">
+        </div>
+      </section>
+
+      <section>
+        <div class="form-group">
+          <label for="razon">Razón de la cita</label>
+          <textarea name="razon" id="razon" required rows="4"></textarea>
+        </div>
+      </section>
+      
+      <section class="contianer-sumit-button">
+        <button type="submit" class="sumit-button">Agendar Cita</button>
+      </section>
+    </form>
+  </article>
 </main>
 {% endblock content %}
 
@@ -79,7 +82,7 @@
     
     const botonAnterior = document.createElement('button');
     botonAnterior.className = 'nav-button';
-    botonAnterior.textContent = '← Anterior';
+    botonAnterior.textContent = '←';
     botonAnterior.type = 'button';
     
     const tituloMes = document.createElement('div');
@@ -87,7 +90,7 @@
     
     const botonSiguiente = document.createElement('button');
     botonSiguiente.className = 'nav-button';
-    botonSiguiente.textContent = 'Siguiente →';
+    botonSiguiente.textContent = '→';
     botonSiguiente.type = 'button';
     
     // Configurar título y límites de navegación

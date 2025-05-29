@@ -1,0 +1,58 @@
+{% extends "layouts/dashboard_paciente.html" %}
+{% load static %}
+{% block head %} 
+<link rel="stylesheet" href="{% static 'static/css/citas.css' %}"> 
+{% endblock head %}
+
+{% block content %}
+<main>
+    <h1>Mis Historial</h1>
+    <div class="container">
+        <section id="citas-medicaspendientes">
+            <div class="section-title">
+                <h2>Numero de Citas</h2>
+                <p>{{nCitas}}</p>
+            </div>
+            {% for cita in citas %}
+                {% if cita.estado == "pendiente" %}
+                    <div class="cita-pendiente cita">
+                        <div id="info-cita-cont">
+                            <h3>{{cita.doctor.especialidad}}</h3>
+                            <p>Fecha: {{cita.bloque.fecha}}</p>
+                            <p>Hora: {{cita.bloque.hora_inicio}}</p>
+                        </div>
+                        <div id="redirect-cita-cont">
+                            <picture></picture>
+                            <a href="{% url 'cita_detalles' cita.id %}">Ver mas</a>
+                        </div>
+                    </div>
+                {% elif cita.estado == "cancelada" %}
+                    <div class="cita-cancelada cita">
+                        <div id="info-cita-cont">
+                            <h3>{{cita.doctor.especialidad}}</h3>
+                            <p>Fecha: {{cita.bloque.fecha}}</p>
+                            <p>Hora: {{cita.bloque.hora_inicio}}</p>
+                        </div>
+                        <div id="redirect-cita-cont">
+                            <picture></picture>
+                            <a href="{% url 'cita_detalles' cita.id %}">Ver mas</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="cita-asistida cita">
+                        <div id="info-cita-cont">
+                            <h3>{{cita.doctor.especialidad}}</h3>
+                            <p>Fecha: {{cita.bloque.fecha}}</p>
+                            <p>Hora: {{cita.bloque.hora_inicio}}</p>
+                        </div>
+                        <div id="redirect-cita-cont">
+                            <picture></picture>
+                            <a href="{% url 'cita_detalles' cita.id %}">Ver mas</a>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </section>
+    </div>
+</main>
+{% endblock content %}

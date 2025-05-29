@@ -21,7 +21,7 @@
         <div class="interactive">
             <nav>
                 <ul>
-                    <li class="link-nav"><a href="{% url 'pacienteDashboard' %}">Inicio</a></li>
+                    <li class="link-nav"><a href="{% url 'paciente_dashboard' %}">Inicio</a></li>
                     <li class="link-nav"><a href="">FQA</a></li>
                     <li class="link-nav"><a href="">Ayuda</a></li>
                 </ul>
@@ -42,19 +42,19 @@
             </div>
             <ul class="menu-aside">
                 <li>
-                    <a href="{% url 'agendarcita' %}">Agendar Citas</a>
+                    <a href="{% url 'agendar_cita' %}">Agendar Citas</a>
                 </li>
                 <li>
                     <a href="{% url 'citas' %}">Mis Citas</a>
                 </li>
                 <li>
-                    <a href="">Historial Medico</a>
+                    <a href="{% url 'historial' %}">Historial Medico</a>
                 </li>
                 <li>
                     <a href="">Recetas</a>
                 </li>
                 <li>
-                    <a href="">Mis Doctores</a>
+                    <a href="{% url 'doctores' %}">Doctores</a>
                 </li>
                 <li>
                     <a href="">Perfil</a>
