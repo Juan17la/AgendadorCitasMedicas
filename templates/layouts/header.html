@@ -19,10 +19,11 @@
         </div>
         <div class="interactive">
             <ul>
-                <li class="link-nav"><a href="">Inicio</a></li>
                 {% if user.is_authenticated %}
-                <li class="link-nav"><a href="{% url 'signin' %}">Logout</a></li>
+                <li class="link-nav"><a href="{% url 'paciente_dashboard' %}">Inicio</a></li>
+                <li class="link-nav"><a href="{% url 'signout' %}">Cerrar Sesion</a></li>
                 {% else %}
+                <li class="link-nav"><a href="{% url 'index' %}">Inicio</a></li>
                 <li class="link-nav"><a href="{% url 'signup' %}">Registrarse</a></li>
                 <li class="link-nav"><a href="{% url 'signin' %}">Iniciar Sesion</a></li>
                 {% endif %}

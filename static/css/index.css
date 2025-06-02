@@ -134,7 +134,7 @@ article{
     flex-wrap: wrap;
 }
 
-button{
+.boton-registro{
     width: fit-content;
     background-color: var(--button-bg-color);
     border: 2px solid var(--button-border-color);
@@ -145,9 +145,10 @@ button{
     font-weight: bold;
     cursor: pointer;
     transition: 0.2s ease-out;
+    text-decoration: none;
 }
 
-button:hover{
+.boton-registro:hover{
     border-radius: 5px;
     color: var(--main-text-color);
     font-size: 1rem;

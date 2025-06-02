@@ -50,4 +50,4 @@ def signIn_view(request):
 
 def signOut_view(request):
     logout(request)
-    return redirect('paciente_dashboard')
+    return redirect('index')
